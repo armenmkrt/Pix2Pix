@@ -40,7 +40,6 @@ def read_keypoints(keypoints, size):
                  ]
     label_list = [1, 2, 2, 3, 4, 4, 5, 6]  # labeling for different facial parts
 
-    # add upper half face by symmetry
     pts = keypoints[:17, :].astype(np.int32)
     baseline_y = (pts[0, 1] + pts[-1, 1]) / 2
     upper_pts = pts[1:-1, :].copy()
@@ -59,18 +58,18 @@ def read_keypoints(keypoints, size):
 
 def draw_face_edges(keypoints, part_list, part_labels, size, img):
     w, h = size
-    edge_len = 3  # interpolate 3 keypoints to form a curve when drawing edges
+    edge_len = 3  
     # edge map for face region from keypoints
-    im_edges = np.zeros((h, w), np.uint8)  # edge map for all edges
+    im_edges = np.zeros((h, w), np.uint8)  
     for edge_list in part_list:
         for edge in edge_list:
             for i in range(0, max(1, len(edge) - 1),
-                           edge_len - 1):  # divide a long edge into multiple small edges when drawing
+                           edge_len - 1):  
                 sub_edge = edge[i:i + edge_len]
                 x = keypoints[sub_edge, 0]
                 y = keypoints[sub_edge, 1]
 
-                curve_x, curve_y = interpPoints(x, y)  # interp keypoints to get the curve shape
+                curve_x, curve_y = interpPoints(x, y)  
                 drawEdge(im_edges, curve_x, curve_y, bw=1, draw_end_points=False)
 
     canny_image = cv2.Canny(img, 80, 150)
